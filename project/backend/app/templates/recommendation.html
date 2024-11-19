@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Product Recommendations</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f4f4;
+        }
+
+        .container {
+            width: 100%;
+            background: rgb(35, 34, 34);
+            color: white;
+            padding: 80px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+
+        }
+
+        form label {
+            font-weight: bold;
+        }
+
+        form input,
+        form select,
+        form button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        form button {
+            background: #06d302;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background: #027407;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table thead {
+            background: #98ee82;
+            color: black;
+        }
+
+        table th,
+        table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even) {
+            background: #737272;
+        }
+
+        table tbody tr:hover {
+            background: #f1f1f1;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Explanation text styling */
+        .modal-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p b {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .modal-content p i {
+            color: #555;
+            font-style: italic;
+        }
+
+        .modal-content p {
+            padding-left: 20px;
+            /* For indentation of explanation bullets */
+        }
+
+        .modal-content {
+            line-height: 1.6;
+            padding: 20px;
+        }
+        /* Style for chatbot button */
+        #chatbot-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1e88e5;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        /* Chatbox styling */
+        #chatbot-box {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #chatbot-messages {
+            padding: 10px;
+            height: 350px;
+            overflow-y: scroll;
+            background-color: #444;
+            color: white;
+        }
+
+        #chatbot-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #555;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Product Recommendations</h1>
+        <form id="recommendationForm">
+            <label for="area">Enter Area:</label>
+            <input type="text" id="area" name="area" required>
+            <label for="sku_id">Enter SKU ID:</label>
+            <input type="text" id="sku_id" name="sku_id" required style="width: 100%; max-width: 600px;">
+
+            <label for="method">Choose Recommendation Method:</label>
+            <select id="method" name="method">
+                <option value="area_popularity">Area Popularity</option>
+                <option value="feature_based">Feature-Based (Content-Based)</option>
+            </select>
+            <button type="submit">Get Recommendations</button>
+        </form>
+
+        <h2>Recommendations</h2>
+        <table id="recommendationsTable">
+            <thead>
+                <tr>
+                    <th>SKU ID</th>
+                    <th>Ordered Quantity</th>
+                    <th>Gross Merchandise Value</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="recommendationsBody">
+                <tr>
+                    <td colspan="4" class="centered">No data available</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Most Ordered Products</h2>
+        <table id="mostOrderedTable">
+            <thead>
+                <tr>
+                    <th>SKU ID</th>
+                    <th>Ordered Quantity</th>
+                    <th>Gross Merchandise Value</th>
+                </tr>
+            </thead>
+            <tbody id="mostOrderedBody">
+                <tr>
+                    <td colspan="3" class="centered">No data available</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Least Ordered Products</h2>
+        <table id="leastOrderedTable">
+            <thead>
+                <tr>
+                    <th>SKU ID</th>
+                    <th>Ordered Quantity</th>
+                    <th>Gross Merchandise Value</th>
+                </tr>
+            </thead>
+            <tbody id="leastOrderedBody">
+                <tr>
+                    <td colspan="3" class="centered">No data available</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Explanation Modal -->
+    <div id="explanationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Explanation</h2>
+            <p id="explanationText">No explanation available</p>
+        </div>
+    </div>
+
+    
+    <!-- Chatbot Button -->
+    <button id="chatbot-btn">Chat</button>
+
+    <!-- Chatbox -->
+    <div id="chatbot-box">
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Ask a question...">
+    </div>
+
+    <script>
+
+
+        // Handle form submission and make the request to the server
+        document.getElementById('recommendationForm').onsubmit = function (event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+            fetch('/recommend', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    console.log('Response:', response); // Debugging line
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data:', data); // Debugging line
+                    // Display recommendations in table format
+                    const recommendationsBody = document.getElementById('recommendationsBody');
+                    recommendationsBody.innerHTML = '';
+                    if (data.recommendations.length > 0) {
+                        data.recommendations.forEach(item => {
+                            recommendationsBody.innerHTML += `<tr>
+                    <td>${item['SKU ID']}</td>
+                    <td>${item['Ordered Quantity']}</td>
+                    <td>${item['Gross Merchandise Value']}</td>
+                    <td><button class="view-explanation" data-sku="${item['SKU ID']}">View Explanation</button></td>
+                </tr>`;
+                        });
+                    } else {
+                        recommendationsBody.innerHTML = '<tr><td colspan="4" class="centered">No recommendations found.</td></tr>';
+                    }
+
+                    // Display most ordered products in table format
+                    const mostOrderedBody = document.getElementById('mostOrderedBody');
+                    mostOrderedBody.innerHTML = '';
+                    data.most_ordered.forEach(item => {
+                        mostOrderedBody.innerHTML += `<tr>
+                <td>${item.sku_id}</td>
+                <td>${item.ordered_quantity}</td>
+                <td>${item.gross_merchandise_value}</td>
+            </tr>`;
+                    });
+
+                    // Display least ordered products in table format
+                    const leastOrderedBody = document.getElementById('leastOrderedBody');
+                    leastOrderedBody.innerHTML = '';
+                    data.least_ordered.forEach(item => {
+                        leastOrderedBody.innerHTML += `<tr>
+                <td>${item.sku_id}</td>
+                <td>${item.ordered_quantity}</td>
+                <td>${item.gross_merchandise_value}</td>
+            </tr>`;
+                    });
+
+                    // Attach click event listeners to explanation buttons
+                    const explanationButtons = document.querySelectorAll('.view-explanation');
+                    explanationButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            const skuId = button.getAttribute('data-sku');
+
+                            const explanationText = data.explanations && data.explanations[skuId]
+                                ? data.explanations[skuId].join('<br>')
+                                : 'No explanation available.';
+
+                            document.getElementById('explanationText').innerHTML = explanationText;
+                            document.getElementById('explanationModal').style.display = 'block';
+                        });
+                    });
+
+                })
+                .catch(error => console.error('Error:', error));
+        };
+
+        // Modal Close Functionality
+        document.getElementById('closeModal').onclick = function () {
+            document.getElementById('explanationModal').style.display = 'none';
+        };
+
+        // Close modal on outside click
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('explanationModal')) {
+                document.getElementById('explanationModal').style.display = 'none';
+            }
+        };
+
+        <!-- JavaScript for chatbot interaction -->
+
+        document.getElementById('chatbot-btn').addEventListener('click', function() {
+            var chatbotBox = document.getElementById('chatbot-box');
+            chatbotBox.style.display = chatbotBox.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                var question = e.target.value;
+                fetch('/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var chatbotMessages = document.getElementById('chatbot-messages');
+                    var newMessage = document.createElement('div');
+                    newMessage.textContent = "Bot: " + data.answer;
+                    chatbotMessages.appendChild(newMessage);
+                });
+
+                // Add user's question to chatbox
+                var chatbotMessages = document.getElementById('chatbot-messages');
+                var userMessage = document.createElement('div');
+                userMessage.textContent = "You: " + question;
+                chatbotMessages.appendChild(userMessage);
+
+                e.target.value = ''; // Clear input
+            }
+        });
+        
+    
+    </script>
+</body>
+
+</html>

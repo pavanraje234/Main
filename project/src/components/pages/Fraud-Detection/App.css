@@ -1,0 +1,49 @@
+body{
+  background-color: black;
+  color: white;
+}
+
+.App {
+    text-align: center;
+    background-color: black;
+    color: white;
+    padding: 20px;
+  }
+  
+  .upload-section {
+    margin-bottom: 20px;
+  }
+  
+  .result-section {
+    margin-top: 20px;
+  }
+  
+  button {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  
+  table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    color: white;
+    background-color: black;
+  }
+  
+  table, th, td {
+    border: 1px solid white;
+  }
+  
+  th, td {
+    padding: 10px;
+  }
+  
+  .error {
+    color: red;
+  }
+  

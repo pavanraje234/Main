@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General dark theme styling */
+        label 
+        {
+            color: white;
+        }
+        select 
+        {
+            color: white;
+        }
+        placeholder
+        {
+            color: white;
+        }
+        body {
+            background-color: #121212;
+            color: #da9e9e;
+            font-family: Arial, sans-serif;
+        }
+        .dataTables_filter{
+            color: white;
+        }
+        /* label{
+            color: white;
+        } */
+        .cards {
+            display: flex;
+            justify-content: space-between;
+            gap: 10%;
+        }
+        
+
+        h1, h2 {
+            color: #ffffff;
+        }
+
+        .container {
+            margin-bottom: 20px;
+            background-color: #333;
+        }
+
+        /* Dark theme for charts and table */
+        canvas {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+           
+        }
+        input{
+            color: #ffffff;
+        }
+        .table-container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            width: 96%;
+        }
+
+        table {
+            color: #555;
+        }
+        
+        .skuProfitabilityTable
+        {
+            color: white;
+        }
+        #profitabilityByChannelChart{
+            color: #ffffff;
+        }
+        /* Cards styling for dark theme */
+        .cards {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            width: 200px;
+        }
+
+        .card h2 {
+            font-size: 2em;
+            margin: 0;
+            color: #4caf50;
+        }
+
+        .card p {
+            margin: 10px 0;
+            color: #aaaaaa;
+        }
+
+        .card a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        /* Style for chatbot button */
+        #chatbot-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1e88e5;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        /* Chatbox styling */
+        #chatbot-box {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #chatbot-messages {
+            padding: 10px;
+            height: 350px;
+            overflow-y: scroll;
+            background-color: #444;
+            color: white;
+        }
+
+        #chatbot-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #555;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body >
+    <h1>Sales Dashboard</h1>
+    
+    <div class="container">
+        <canvas id="salesByChannelChart"></canvas>
+    </div>
+    
+    <div class="container">
+        <canvas id="salesBySkuChart"></canvas>
+    </div>
+    
+    <div class="container" style="color: #ffffff;">
+        <h2>SKU Profitability</h2>
+        <div class="table-container" style="color: white;">
+            <table id="skuProfitabilityTable" class="display">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Profitability</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="container">
+        <canvas id="profitabilityByChannelChart" style="color: white;"></canvas>
+    </div>
+     
+    <!-- Cards -->
+    <div class="cards">
+        <div class="card">
+            <h2>{{ cards['retailers'] }}</h2>
+            <p>Total Retailers</p>
+            <a href="#">View</a>
+        </div>
+        <div class="card">
+            <h2>{{ cards['customers'] }}</h2>
+            <p>Customers</p>
+            <a href="#">View</a>
+        </div>
+        <div class="card">
+            <h2>{{ cards['escalations'] }}</h2>
+            <p>Performance Escalations</p>
+            <a href="#">View</a>
+        </div>
+        <div class="card">
+            <h2>{{ cards['issues'] }}</h2>
+            <p>Total Issues</p>
+            <a href="#">View</a>
+        </div>
+    </div> 
+
+    <!-- Chatbot Button -->
+    <button id="chatbot-btn">Chat</button>
+
+    <!-- Chatbox -->
+    <div id="chatbot-box">
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Ask a question...">
+    </div>
+    
+    <!-- JavaScript for chatbot interaction -->
+    <script>
+        document.getElementById('chatbot-btn').addEventListener('click', function() {
+            var chatbotBox = document.getElementById('chatbot-box');
+            chatbotBox.style.display = chatbotBox.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                var question = e.target.value;
+                fetch('/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var chatbotMessages = document.getElementById('chatbot-messages');
+                    var newMessage = document.createElement('div');
+                    newMessage.textContent = "Bot: " + data.answer;
+                    chatbotMessages.appendChild(newMessage);
+        
+                    // Display the graph if available
+                    if (data.graph) {
+                        var graphImage = document.createElement('img');
+                        graphImage.src = 'data:image/png;base64,' + data.graph;
+                        chatbotMessages.appendChild(graphImage);
+                    }
+                });
+        
+                // Add user's question to chatbox
+                var chatbotMessages = document.getElementById('chatbot-messages');
+                var userMessage = document.createElement('div');
+                userMessage.textContent = "You: " + question;
+                chatbotMessages.appendChild(userMessage);
+        
+                e.target.value = ''; // Clear input
+            }
+        });
+        
+    </script>
+
+    <!-- Include external JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+/* General container styling */
+.container {
+    display: flex;
+    height: 100vh;
+    background-color: #111;
+    color: #fff;
+}
+a {
+    text-decoration: none; /* Removes the underline */
+    color: inherit;        /* Inherits the color from its parent, removing the default blue */
+  }
+  
+/* Sidebar styling */
+.sidebar {
+    width: 80px;
+    background-color: #1a1a1a;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icon {
+    margin-bottom: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    background-color: #222;
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.icon:hover {
+    background-color: #3a3a3a;
+}
+
+/* Main content area styling */
+.main {
+    padding: 20px;
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Header and subheader styling */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+/* Styling for import options */
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Individual option styling */
+.option {
+    width: 150px;
+    height: 150px;
+    background-color: #4caf50;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    color: white;
+}
+
+.option:hover {
+    transform: translateY(-5px);
+    background-color: #45a049;
+}
+
+.option i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.option p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* File upload preview */
+.uploaded-data {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+}
