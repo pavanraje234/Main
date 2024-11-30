@@ -57,7 +57,7 @@ function App() {
   };
 
   const handleDownload = () => {
-    window.location.href = 'http://127.0.0.1:5000/download';
+    window.location.href = 'https://demandion-88po.vercel.app/download';
   };
 
   return (
