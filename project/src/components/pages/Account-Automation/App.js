@@ -42,7 +42,7 @@ const FileUpload = () => {
                     <i className="fas fa-users"></i>
                 </div>
                 <div className="icon">
-                    <a href="http://127.0.0.1:5000" target="_blank" rel="noopener noreferrer">
+                    <a href="https://demandion-88po.vercel.app/" target="_blank" rel="noopener noreferrer">
                         <i className="fas fa-comment"></i>
                     </a>
                 </div>
@@ -74,7 +74,7 @@ const FileUpload = () => {
         {graphs.map((url, index) => (
           <div key={index} style={{marginLeft:"0px",marginTop:"0px"}}>
             <h3 style={{ marginRight:"0px",marginTop:"0px"}}>Graph {index + 1}</h3>
-            <img src={`http://127.0.0.1:5000${url}`} alt={`Graph ${index + 1}`} style={{marginTop:"50px"}} />
+            <img src={`https://demandion-88po.vercel.app${url}`} alt={`Graph ${index + 1}`} style={{marginTop:"50px"}} />
           </div>
         ))}
       </div>
