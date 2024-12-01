@@ -1,7 +1,6 @@
 {
     "version": 2,
     "builds": [
-<<<<<<< HEAD
         { "src": "./index.py", 
           "use": "@vercel/python",
           "config":{"runtime":"python3.6"}}
@@ -10,11 +9,5 @@
         { "src": "/(.*)", 
           "dest": "app.py" 
         }
-=======
-        { "src": "app.py", "use": "@vercel/python" }
-    ],
-    "routes": [
-        { "src": "/(.*)", "dest": "app.py" }
->>>>>>> d3df83c2a7bb1d997d7e8f1436902a88566fdd76
     ]
 }
