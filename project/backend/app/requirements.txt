@@ -1,4 +1,11 @@
-Flask
-
-
-
+Flask==<latest-version>
+flask-cors==<latest-version>
+numpy==<latest-version>
+pandas==<latest-version>
+matplotlib==<latest-version>
+scikit-learn==<latest-version>
+sqlite3==<builtin>  # sqlite3 is part of Python's standard library and doesn't need to be installed.
+requests==<latest-version>
+google-generativeai==<latest-version>
+aivisualization==<latest-version>  # Assuming this is a library available on PyPI
+GraphGenerator==<latest-version>   # Assuming this is a library available on PyPI
