@@ -32,7 +32,7 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/fraud-detection', formData, {
+      const response = await axios.post('https://demandion-88po.vercel.app/fraud-detection', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -57,7 +57,7 @@ function App() {
   };
 
   const handleDownload = () => {
-    window.location.href = 'http://127.0.0.1:5000/download';
+    window.location.href = 'https://demandion-88po.vercel.app/download';
   };
 
   return (
@@ -73,7 +73,7 @@ function App() {
                     <i className="fas fa-users"></i>
                 </div>
                 <div className="icon">
-                    <a href="http://127.0.0.1:5000" target="_blank" rel="noopener noreferrer">
+                    <a href="https://demandion-88po.vercel.app/" target="_blank" rel="noopener noreferrer">
                         <i className="fas fa-comment"></i>
                     </a>
                 </div>
