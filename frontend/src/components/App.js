@@ -65,19 +65,19 @@ const MainApp = () => {
           </div>
           <div className="option">
             <i className="fas fa-file-upload"></i>
-            <a href="https://demandion-88po.vercel.app/aivisualization" target="_blank" rel="noopener noreferrer">
+            <a href="http://127.0.0.1:5000/aivisualization" target="_blank" rel="noopener noreferrer">
               <p>AI Visualization</p>
             </a>
           </div>
           <div className="option">
             <i className="fas fa-link"></i>
-            <a href="https://demandion-88po.vercel.app/" target="_blank" rel="noopener noreferrer">
+            <a href="http://127.0.0.1:5000/" target="_blank" rel="noopener noreferrer">
               <p>Graph Generator</p>
             </a>
           </div>
           <div className="option">
             <i className="fas fa-sync-alt"></i>
-            <a href="https://demandion-88po.vercel.app/recommendation" target="_blank" rel="noopener noreferrer">
+            <a href="http://127.0.0.1:5000/recommendation" target="_blank" rel="noopener noreferrer">
               <p>Recommendations</p>
             </a>
           </div>
