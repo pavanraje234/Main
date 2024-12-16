@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';  // Use Link for SPA routing
-import Chatbot from './Chatbot';
+import { Link } from 'react-router-dom';  // Use Link for SPA routi
 import './styles.css';
 
 const MainApp = () => {
